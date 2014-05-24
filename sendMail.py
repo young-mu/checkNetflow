@@ -41,6 +41,7 @@ def sendMail(content, filespath = None) :
 		return False
 
 if __name__ == "__main__" :
+	content = 'Hi,there'
 	assert type(sender) == str
 	assert type(tolist) == list
 	assert type(cclist) == list

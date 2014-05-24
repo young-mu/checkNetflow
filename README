@@ -2,6 +2,12 @@ This is a monitor routine (checkNetflow dameon).
 
 It will check netflow and balance from hitsun.hit.edu.cn, once the balance reaches threshold,this routine will automatically send email to everyone in this Lab.
 
+---------- Project Usage ---------
+
+(i). create logInfo.py, add hostURL, postURL, username and password variables.
+(ii). create mailInfo.py, add sender, password, tolist, cclist, subject and filespath variables.
+(iii). ./checkNetflow [a|c|d|m]
+
 ---------- File Description ----------
 
 (i). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the username & passwordare stored in loginfo.py, which is not controlled by git due to security reason.

@@ -47,6 +47,6 @@ elif (len(sys.argv) == 2 and sys.argv[1] == 'm') :
 	else :
 		print "send mail failed."
 else :
-	print "usage unavaliable. (usage : ./checkNetflow.py [i|c|d])"
+	print "usage unavaliable. (usage : ./checkNetflow.py [i|c|d|m])"
 	print "a - Account information | c - mail Content | d - Debug information | m - send Mail" 
 

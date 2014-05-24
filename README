@@ -1,8 +1,26 @@
-This is a monitor routine.
+This is a monitor routine (checkNetflow dameon).
 
 It will check netflow and balance from hitsun.hit.edu.cn, once the balance reaches threshold,this routine will automatically send email to everyone in this Lab.
 
+---------- File Description ----------
 
-(i). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the username & passwordare stored in loginfo.py, which is not included by git.
+(i). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the username & passwordare stored in loginfo.py, which is not controlled by git due to security reason.
 
-(ii). getInfo.py can get information from HTML content, the return value is dict variable whose keys are balance, netflow and deposit. 
+(ii). getInfo.py can get information from HTML content, which is acheived by call getHTMLhitsun imported from getHTML. The return value is dict variable whose keys are balance, netflow and deposit. 
+
+(iii). sendMail.py can send email with attachments. The mail information such as sender, password, tolist, subject, etc. are imported from mailInfo.py, which is not controlled by git due to security reason.
+
+(iv). checkNetflow.py is main program. It get informations by calling getInfohitsun imported from getInfo. The required raw data including balance, netflow and deposit will be processed first, and added in the mail content. With other mail information, the main program will call sendMailimported from sendMail to send email to everyone in this Lab.
+
+---------- Calling Hierarchy ----------
+
+- checkNetflow.py 
+|	- getInfo.py
+|	|	- getHTML.py
+|	|	|	- logInfo.py
+|	- sendMail.py
+|	|	- mailInfo.py
+
+
+---------- <END> ----------
+

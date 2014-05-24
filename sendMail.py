@@ -7,7 +7,7 @@ from email.mime.text import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 from mailInfo import sender, password, subject, tolist, cclist, filespath 
 
-def sendMail(content, filespath = None) :
+def sendMail(subject, content, filespath = None) :
 	try :
 		# get server name from email sender
 		r_server = re.compile(r'.*@(.*)(\.com|\.cn)')
@@ -48,7 +48,7 @@ if __name__ == "__main__" :
 	assert type(subject) == str
 	assert type(content) == str
 	assert type(filespath) == list or filespath is None
-	if sendMail(content, filespath) :
+	if sendMail(subject, content, filespath) :
 		print "send mail successfully."
 	else :
 		print "send mail failed."

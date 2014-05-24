@@ -4,12 +4,7 @@
 import urllib
 import urllib2
 import cookielib
-from logInfo import username, password
-
-# host URL
-hostURL = 'http://hitsun.hit.edu.cn' 			
-# post URL (page source, action)
-postURL = 'http://hitsun.hit.edu.cn/index1.php'
+from logInfo import hostURL, postURL, username, password
 
 def getHTMLhitsun(hosturl, posturl, username, password) :
 	try :

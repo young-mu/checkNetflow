@@ -4,7 +4,7 @@
 import urllib
 import urllib2
 import cookielib
-from loginfo import username, password
+from logInfo import username, password
 
 # host URL
 hostURL = 'http://hitsun.hit.edu.cn' 			
@@ -30,6 +30,8 @@ def getHTMLhitsun(hosturl, posturl, username, password) :
 		request = urllib2.Request(posturl, postData, headers)
 		page = urllib2.urlopen(request)
 		html = page.read()
+		# support Chinese
+		html = unicode(html, 'gb2312').encode('utf-8')
 		return html
 	except Exception, e :
 		print str(e)

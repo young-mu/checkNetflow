@@ -5,4 +5,4 @@ It will check netflow and balance from hitsun.hit.edu.cn, once the balance reach
 
 (i). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the username & passwordare stored in loginfo.py, which is not included by git.
 
-(ii). ...
+(ii). getInfo.py can get information from HTML content, the return value is dict variable whose keys are balance, netflow and deposit. 

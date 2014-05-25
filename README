@@ -6,7 +6,7 @@ It will check netflow and balance from hitsun.hit.edu.cn, once the balance reach
 
 (i). create logInfo.py, add hostURL, postURL, username and password variables.
 (ii). create mailInfo.py, add sender, password, tolist, cclist, subject and filespath variables.
-(iii). ./checkNetflow [a|c|d|m]
+(iii). ./checkNetflow [a|c|d|m|r]
 
 ---------- File Description ----------
 

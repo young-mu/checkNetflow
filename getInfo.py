@@ -1,24 +1,44 @@
 #!/usr/bin/python
 #encoding=utf-8
 
-import re
-from getHTML import hostURL, postURL
+import re, string
+from getTime import getCurrentTime
+from getHTML import hostURL, postURL, subpostURL
 from getHTML import username, password
 from getHTML import getHTMLhitsun 
 
 def getInfohitsun() :
-	htmlctx = getHTMLhitsun(hostURL, postURL, username, password)
+	[htmlCtx, subhtmlCtx] = getHTMLhitsun(hostURL, postURL, subpostURL, username, password)
 	r_balance = re.compile(r">所剩余额:.*?(\d{1,3}\.\d{2}).*?</td>", re.S)
-	balance = re.findall(r_balance, htmlctx)
-	r_netflow = re.compile(r">包月已使用流量\(KB\):.*?(\d.*?\.\d{2}).*?</td>", re.S);
-	netflow = re.findall(r_netflow, htmlctx)
+	balance = re.findall(r_balance, htmlCtx)
+	balance = string.atof(balance[0])
 	r_deposit = re.compile(r">包月存钱罐余额\(元\):.*?(\d{1,3}\.\d{2}).*?</td>", re.S)
-	deposit = re.findall(r_deposit, htmlctx)
-	dictInfo = {}
-	dictInfo['balance'] = balance
-	dictInfo['netflow'] = netflow
-	dictInfo['deposit'] = deposit
-	return dictInfo	
+	deposit = re.findall(r_deposit, htmlCtx)
+	deposit = string.atof(deposit[0])
+	# get netflow dict ( format, day:(free, nofree, indoor) )
+	netflow = {} 
+	[Year, Month, Day, Weekday, Time] = getCurrentTime()
+	for day in range(Day) :
+		r_string = r'%04d-%02d-%02d 00:00:00</td>.*?>(\d.*?)</td>.*?>(\d.*?)</td>.*?>(\d.*?)</td>' %(Year, Month, day + 1)		
+		r_netflow = re.compile(r_string, re.S)
+		_netflow = re.findall(r_netflow, subhtmlCtx)
+		if (_netflow != []) :
+			free = string.atof(_netflow[0][0].replace(',','')) / 1000 / 1000
+			nofree = string.atof(_netflow[0][1].replace(',','')) / 1000 / 1000
+			indoor = string.atof(_netflow[0][2].replace(',','')) / 1000 /1000
+			netflow[day + 1] = (free, nofree, indoor) 
+	return [balance, deposit, netflow]	
 
 if __name__ == '__main__' :
-	print getInfohitsun()	
+	[balance, deposit, netflow] = getInfohitsun()
+	assert type(balance) == float 
+	assert type(deposit) == float
+	assert type(netflow) == dict 
+	print "balance \t: " + str(balance)
+	print "deposit \t: " + str(deposit)
+	print "netflow \t"
+	[Year, Month, Day, Weekday, Time] = getCurrentTime()
+	for day in range(Day) :
+		if (netflow.has_key(day + 1)) :
+			print "%04d-%02d-%02d \t: " %(Year, Month, day + 1) + str(netflow[day + 1]) 
+

@@ -1,36 +1,16 @@
 #!/usr/bin/python
 #encoding=utf-8
 
-import sys, string, time, calendar
+import sys, string
 import mailInfo, logInfo
+from getTime import getCurrentTime
 from getInfo import getInfohitsun
 from sendMail import sendMail
 
 
 # internal functions
-def getCurrentTime() :
-	localTime = time.localtime(time.time())
-	Year = string.atoi( time.strftime('%Y', localTime) )
-	Month = string.atoi( time.strftime('%m', localTime) )
-	Day = string.atoi( time.strftime('%d', localTime) )
-	Weekday = calendar.weekday(Year, Month, Day)
-	Time = time.strftime('%H:%M:%S', localTime) 	
-	ret = [Year, Month, Day, Weekday, Time]
-	return ret
-
-def getProcessedInfo() :
-	dictInfo = getInfohitsun()
-	balance = dictInfo['balance']
-	balance = string.atof(balance[0])
-	netflow = dictInfo['netflow']
-	netflow = string.atof(netflow[0].replace(',','')) / 1000 / 1000
-	deposit = dictInfo['deposit']
-	deposit = string.atof(deposit[0])
-	ret = [balance, netflow, deposit]
-	return ret
-
 def getContent() :
-	[balance, netflow, deposit] = getProcessedInfo()
+	[balance, deposit, netflow] = getInfohitsun()
 	[Year, Month, Day, Weekday, Time] = getCurrentTime()
 	content = '''Hi, all,\n
 The netflow of IP address %s has reached [%.2f GB] until %d-%d-%d %s in this month.
@@ -86,17 +66,18 @@ def printUsage() :
 
 
 # main control
-if (len(sys.argv) == 2 and sys.argv[1] == 'a') :
-	printAccount()
-elif (len(sys.argv) == 2 and sys.argv[1] == 'c') :
-	printContent()
-elif (len(sys.argv) == 2 and sys.argv[1] == 'd') :
-	printDebug()
-elif (len(sys.argv) == 2 and sys.argv[1] == 'm') :
-	sendDirectMail()
-elif (len(sys.argv) == 2 and sys.argv[1] == 'r') :
-	sendRoutineMail()
-else :
-	printUsage()
+if __name__ == '__main__' :
+	if (len(sys.argv) == 2 and sys.argv[1] == 'a') :
+		printAccount()
+	elif (len(sys.argv) == 2 and sys.argv[1] == 'c') :
+		printContent()
+	elif (len(sys.argv) == 2 and sys.argv[1] == 'd') :
+		printDebug()
+	elif (len(sys.argv) == 2 and sys.argv[1] == 'm') :
+		sendDirectMail()
+	elif (len(sys.argv) == 2 and sys.argv[1] == 'r') :
+		sendRoutineMail()		
+	else :
+		printUsage()
 
 	

@@ -2,47 +2,55 @@
 #encoding=utf-8
 
 import urllib, urllib2, cookielib
-from logInfo import hostURL, postURL, username, password
+from getTime import getCurrentTime
+from logInfo import hostURL, postURL, subpostURL, username, password
 
-def getHTMLhitsun(hosturl, posturl, username, password) :
+
+def getHTMLhitsun(hosturl, posturl, subposturl, username, password) :
 	try :
-		# set a cookie proceesor 		
+		# 1. set a cookie proceesor 		
 		cj = cookielib.LWPCookieJar()
 		cookie_support = urllib2.HTTPCookieProcessor(cj)
 		opener = urllib2.build_opener(cookie_support, urllib2.HTTPHandler)
 		urllib2.install_opener(opener)
-		# get cookie from host URL
+		# 2. get cookie from host URL
 		h = urllib2.urlopen(hosturl)
-		# camouflage as the Mozilla browser
+		# 3. camouflage as the Mozilla browser
 		headers = {'User-Agent':'Mozilla/5.0'}
-		# fill in form to be posted (page source, input)
+		# 4. fill in form to be posted (page source, <input> label)
 		postData = {'fr':'00', 'id_ip':username, 'pass':password, 'set':'进入'}
-		# encode postData
+		# 5. encode postData
 		postData = urllib.urlencode(postData)
-		# request post URL with post data, headers and cookie
+		# 6. request post URL with post data, headers and cookie
 		request = urllib2.Request(posturl, postData, headers)
 		page = urllib2.urlopen(request)
 		html = page.read()
-		# support Chinese
+		# 7. support Chinese
 		html = unicode(html, 'gb2312').encode('utf-8')
-		# enter tmp-page
-		tmpurl = hosturl + '/monthly.php'
-		tmppage = opener.open(tmpurl)
-		tmphtml = tmppage.read()
-		tmphtml = unicode(tmphtml, 'gb2312').encode('utf-8')
-		# enter sub-page
-		subpostData = {'start_year':'2014', 'start_month':'05', 'start_day':'01', 'end_year':'2014', 'end_month':'05', 'end_day':'26', 'ip':'219.217.250.185', 'fr':'11', 'set':'查询'}
-#		data = {'ip':'219.217.250.185', 'set':'查询'}
+		# enter sub-page (post) (normal : page = opener.open(URL)
+		[Year, Month, Day, Weekday, Time] = getCurrentTime()
+		subpostData = {'start_year':Year, 'start_month':Month, 'start_day':1, 
+					   'end_year':Year, 'end_month':Month, 'end_day':Day, 
+					   'ip':username, 'fr':'11', 'set':'查询'}
 		subpostData = urllib.urlencode(subpostData)
-		suburl = hosturl + '/monthly_ret.php'
-		subrequest = urllib2.Request(suburl, subpostData, headers)
+		subrequest = urllib2.Request(subposturl, subpostData, headers)
 		subpage = urllib2.urlopen(subrequest)
 		subhtml = subpage.read()
 		subhtml = unicode(subhtml, 'gb2312').encode('utf-8')
-		return subhtml
+		return [html, subhtml]
 	except Exception, e :
 		print str(e)
 
 if __name__ == '__main__' :
-	print getHTMLhitsun(hostURL, postURL, username, password)
-
+	assert type(hostURL) == str
+	assert type(postURL) == str
+	assert type(subpostURL) == str
+	assert type(username) == str
+	assert type(password) == str
+	[html, subhtml] = getHTMLhitsun(hostURL, postURL, subpostURL, username, password)
+	assert type(html) == str
+	assert type(subhtml) == str
+	print "HTML data of %s : \n--------------------" % hostURL
+	print html
+	print "HTML data of %s : \n--------------------" % subpostURL
+	print subhtml

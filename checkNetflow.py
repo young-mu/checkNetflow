@@ -7,24 +7,39 @@ from getTime import getCurrentTime
 from getInfo import getInfohitsun
 from sendMail import sendMail
 
-
 # internal functions
+def getNetflow(netflow) :
+	values = netflow.values();
+	free = 0.0
+	nofree = 0.0
+	indoor = 0.0
+	for i in range(len(values)) :
+		free += values[i][0]
+		nofree += values[i][1]
+		indoor += values[i][2]
+	total = free + nofree + indoor
+	return [total, free, nofree, indoor]
+		
 def getContent() :
 	[balance, deposit, netflow] = getInfohitsun()
+	[total, free, nofree, indoor] = getNetflow(netflow)	
 	[Year, Month, Day, Weekday, Time] = getCurrentTime()
 	content = '''Hi, all,\n
-The netflow of IP address %s has reached [%.2f GB] until %d-%d-%d %s in this month.
+Until %d-%d-%d %s in this month, the total netflow has reached [%.2f GB].
+The free, nofree and indoor netflow are [%.2f GB], [%.2f GB] and [%.2f GB] respectively. 
 Our lab's net balance is [%.2f] and the deposit is [%.2f].\n
-----------
+---------------
 This is sended by checkNetflow daemon automaticlally, please don't reply.\n
 Thanks,
-checkNetflow''' %(logInfo.username, netflow, Year, Month, Day, Time, balance, deposit)
+checkNetflow''' %(Year, Month, Day, Time, total, free, nofree, indoor, balance, deposit)
 	return content
 
 def printAccount() :
-	[balance, netflow, deposit] = getProcessedInfo()
+	[balance, deposit, netflow] = getInfohitsun()
+	[total, free, nofree, indoor] = getNetflow(netflow)
 	print "account infomation\n--------------------"
-	print "balance \t: %.2f\ndeposit \t: %.2f\nnetflow \t: %.4f GB" %(balance, deposit, netflow)
+	print "balance \t\t: %.2f\ndeposit \t\t: %.2f\nnetflow (total)\t\t: %.4f GB" %(balance, deposit, total)
+	print "netflow (free) \t\t: %.4f GB\nnetflow (nofree) \t: %.4f GB\nnetflow (indoor) \t: %.4f GB" %(free, nofree, indoor)
 	print "--------------------"
 
 def printContent() :
@@ -39,8 +54,7 @@ def printDebug() :
 	print "Tolist \t\t: %s\nCclist \t\t: %s" %(mailInfo.tolist, mailInfo.cclist)
 	print "Subject \t: %s\nAttachments \t: %s" %(mailInfo.subject, mailInfo.filespath)
 	[Year, Month, Day, Weekday, Time] = getCurrentTime()
-	weekdayName = ['Mon', 'Tue', 'Wes', 'Thr', 'Fri', 'Sat', 'Sun']
-	print "Date \t\t: %d-%d-%d\nWeekday \t: %s\nTime \t\t: %s" %(Year, Month, Day, weekdayName[Weekday], Time)
+	print "Date \t\t: %d-%d-%d\nWeekday \t: %s\nTime \t\t: %s" %(Year, Month, Day, Weekday, Time)
 	print "--------------------"
 	
 def sendDirectMail() :
@@ -63,7 +77,6 @@ def printUsage() :
 	print "--------------------"
 	print "a - Account information\nc - mail Content\nd - Debug information\nm - send direct Mail\nr - send Routine mail" 
 	print "--------------------"
-
 
 # main control
 if __name__ == '__main__' :

@@ -1,32 +1,36 @@
 This is a monitor routine (checkNetflow dameon).
 
-It will check netflow and balance from hitsun.hit.edu.cn, once the balance reaches threshold,this routine will automatically send email to everyone in this Lab.
+It will check netflow and balance from hitsun.hit.edu.cn, once the nofree netflow reaches threshold, this routine will automatically send email to everyone in this Lab.
 
 ---------- Project Usage ---------
 
-(i). create logInfo.py, add hostURL, postURL, username and password variables.
+(i). create logInfo.py, add hostURL, postURL, subpostURL, username and password variables.
 (ii). create mailInfo.py, add sender, password, tolist, cclist, subject and filespath variables.
 (iii). ./checkNetflow [a|c|d|m|r]
 
 ---------- File Description ----------
 
-(i). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the username & passwordare stored in loginfo.py, which is not controlled by git due to security reason.
+(i). getTime.py can get current date, weekday and time. the return value is a list whose elements are year(int), month(int), day(int), weekday(str) and time(str).
 
-(ii). getInfo.py can get information from HTML content, which is acheived by call getHTMLhitsun imported from getHTML. The return value is dict variable whose keys are balance, netflow and deposit. 
+(ii). getHTML.py can get html content by logging in hitsun.hit.edu.cn, the hostURL, postURL, subpostURL, username(IP) and password are stored in logInfo.py, which is not controlled by git due to security reason.
 
-(iii). sendMail.py can send email with attachments. The mail information such as sender, password, tolist, subject, etc. are imported from mailInfo.py, which is not controlled by git due to security reason.
+(iii). getInfo.py can get information from HTML content, which is acheived by call getHTMLhitsun imported from getHTML. The return value is list variable whose elements are balance(float), deposit(float) and netflow(dict). The netflow's element format is day(int):(free, nofree, indoor)(tuple). 
 
-(iv). checkNetflow.py is main program. It get informations by calling getInfohitsun imported from getInfo. The required raw data including balance, netflow and deposit will be processed first, and added in the mail content. With other mail information, the main program will call sendMailimported from sendMail to send email to everyone in this Lab.
+(iv). sendMail.py can send email with attachments. The mail information including sender, password, tolist, cclist, subject and filespath are imported from mailInfo.py, which is not controlled by git due to security reason.
+
+(v). checkNetflow.py is main program. It get informations by calling getInfohitsun imported from getInfo. The return values are converted to primitive types already, and added in the mail content. With other mail information, the main program will call sendMail imported from sendMail to send email to everyone in this Lab.
 
 ---------- Calling Hierarchy ----------
 
-- checkNetflow.py 
+- checkNetflow.py
+|	- getTime.py
 |	- getInfo.py
 |	|	- getHTML.py
 |	|	|	- logInfo.py
+|	|	|	- getTime.py
 |	- sendMail.py
 |	|	- mailInfo.py
-
+|	|	- getTime.py
 
 ---------- <END> ----------
 

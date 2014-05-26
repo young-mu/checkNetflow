@@ -24,6 +24,9 @@ def getHTMLhitsun(hosturl, posturl, username, password) :
 		# request post URL with post data, headers and cookie
 		request = urllib2.Request(posturl, postData, headers)
 		page = urllib2.urlopen(request)
+		# page true URL : page.url
+		# page info : page.info()
+		# page HTML data : page.read()
 		html = page.read()
 		# support Chinese
 		html = unicode(html, 'gb2312').encode('utf-8')

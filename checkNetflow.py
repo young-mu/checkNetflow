@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #encoding=utf-8
 
-import sys, string, calendar
+import sys, string, time, calendar
 import mailInfo, logInfo
 from getTime import getCurrentTime
 from getInfo import getInfohitsun
@@ -76,8 +76,8 @@ def sendRoutineMail() :
 	while True :
 		time.sleep(1)
 		[Year, Month, Day, Weekday, Time] = getCurrentTime()
-		# each Monday 00:00:00
-		if (Weekday == 0 and Time == '00:00:00') :
+		# everyday 00:00:00
+		if (Time == '00:00:00') :
 			sendDirectMail()
 
 def printUsage() :

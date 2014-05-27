@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #encoding=utf-8
 
-import sys, string
+import sys, string, calendar
 import mailInfo, logInfo
 from getTime import getCurrentTime
 from getInfo import getInfohitsun
@@ -41,6 +41,14 @@ def printAccount() :
 	print "balance \t\t: %.2f\ndeposit \t\t: %.2f\nnetflow (total)\t\t: %.4f GB" %(balance, deposit, total)
 	print "netflow (free) \t\t: %.4f GB\nnetflow (nofree) \t: %.4f GB\nnetflow (indoor) \t: %.4f GB" %(free, nofree, indoor)
 	print "--------------------"
+	weekdayName = ['Mon', 'Tue', 'Wes', 'Thu', 'Fri', 'Sat', 'Sun']
+	[Year, Month, Day, Weekday, Time] = getCurrentTime()
+	print "      Date                 free           nofree          indoor"
+	print "------------------------------------------------------------------"
+	for day in range(Day) :
+		weekday = weekdayName[calendar.weekday(Year, Month, day + 1)]
+		if (netflow.has_key(day + 1)) :
+			print "%04d-%02d-%02d (%s) \t %.4f GB\t %0.4f GB\t %0.4f GB" %(Year, Month, day + 1,weekday, netflow[day+1][0], netflow[day+1][1], netflow[day+1][2]) 
 
 def printContent() :
 	content = getContent()
